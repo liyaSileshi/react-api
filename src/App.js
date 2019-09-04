@@ -25,7 +25,7 @@ class App extends Component {
     super(props)
 
     this.state = {
-      inputValue: '',     // Used to hold value entered in the input field
+      inputValue: '94010',     // Used to hold value entered in the input field
       weatherData: null,  // Used to hold data loaded from the weather API
     }
   }
