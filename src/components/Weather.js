@@ -1,5 +1,7 @@
 import React, {Component} from 'react'
 import Temperature from './Temperature'
+import Description from './WeatherDescription'
+import Atmosphere from './Atmosphere'
 
 class Weather extends Component {
 
@@ -59,13 +61,10 @@ class Weather extends Component {
         
         return (
           <div>
-            <div>Title: {main}</div>
-            <div>Desc: {description}</div>
             <div>Icon: {icon}</div>
+            <Description title={main} desc={description}/> 
             <Temperature temp = {temp} min={temp_min} max={temp_max} /> 
-            <div>Pressure: {pressure}</div>
-            <div>Humidity: {humidity}</div>
-            <div>Temp Min: {temp_min} Max:{temp_max}</div>
+            <Atmosphere pressure = {pressure} humidity = {humidity}/>
           </div>
         )
       }
