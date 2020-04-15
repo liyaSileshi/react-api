@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import Temperature from './Temperature'
 import Description from './WeatherDescription'
 import Atmosphere from './Atmosphere'
+import Error from './Error'
+import Loading from './Loading'
 import './Weather.css'
 
 class Weather extends Component {
@@ -28,15 +30,11 @@ class Weather extends Component {
 
     // Get data from the API with fetch
     fetch(url).then(res => {
-      console.log(res.status)
-      //method to check status
-      this.checkStatus(res.status)
       // Handle the response stream as JSON
       return res.json()
     }).then((json) => {
       // If the request was successful assign the data to component state
       this.setState({ weatherData: json , isLoading: false})
-      console.log(this.state.weatherData)
       // ! This needs better error checking here or at renderWeather() 
       // It's possible to get a valid JSON response that is not weather 
       // data, for example when a bad zip code entered.
@@ -49,37 +47,22 @@ class Weather extends Component {
       // You may want to display an error to the screen here. 
     })
 
-  if(this.state.errorMessage !== ''){
-    return <h3 className="error"> { this.state.errorMessage } </h3>
-  }
-  
-}
-
-  //checks if data is obtained from API
-  //if not, returns an error message
-  checkStatus(status) {
-    if (status !== 200) {
-      return <p>oops</p>
-
+    if(this.state.errorMessage !== ''){
+      return <h3 className="error"> { this.state.errorMessage } </h3>
     }
   }
+
 
   renderWeather() {
     // This method returns undefined or a JSX component
     if (this.state.weatherData === null) { //
       // If there is no data return undefined
-      console.log('no data')
-      return <p>no data</p>
+      return undefined
     }
 
-    /* 
-    This next step needs another level of error checking. It's 
-    possible to get a JSON response for an invalid zip in which 
-    case the step below fails. 
-    */ 
     //check if json is valid
-    console.log(typeof this.state.weatherData.cod)
     if (this.state.weatherData.cod === 200){  // if json status is valid, show data
+      // Take the weather data apart to more easily populate the component
       const { main, description, icon } = this.state.weatherData.weather[0]
       const { temp, pressure, humidity, temp_min, temp_max } = this.state.weatherData.main 
     
@@ -91,29 +74,24 @@ class Weather extends Component {
           <Atmosphere pressure = {pressure} humidity = {humidity}/>
         </div>
       )
-    }
-    else{
-      return <p>no valid data</p>
+    } else{ //invalid zipcode
+      return (
+        <div>
+          <Error />
+        </div>
+      )
     }
   }
-    // Take the weather data apart to more easily populate the component
-
     
-
   checkRender() {
     if (this.state.inputValue === ''){
       return <p>Please enter zip</p>
-    } else if (this.state.isLoading === true){
-      console.log('loading')
-      return <p>Loading...</p>
+
+    } else if (this.state.isLoading === true){ //renders when waiting for json request data
+      return <Loading /> 
     }
 
-    if (this.state.errorMessage !== '' || this.state.weatherData === null) {
-      return <p>data not found</p>
-    }else{
-      return this.renderWeather()
-    }
-    
+    return this.renderWeather()    
   }
 
   render() {
@@ -141,8 +119,6 @@ class Weather extends Component {
         </form>
 
         {/** Conditionally render this component */}
-        
-        {/* {this.renderWeather()} */}
         {this.checkRender()}
 
       </div>
