@@ -1,0 +1,11 @@
+.weather{
+    margin-left: 35%;
+    margin-top: 10%;
+}
+
+.submit-btn{
+    padding: 2%;
+    margin-left: 1%;
+    border-radius: 15%;
+    background-color: #e96d6d;
+}
