@@ -18,6 +18,21 @@ class Weather extends Component {
     }
   }
 
+  async getWeatherData(url) {
+    try{
+      const res = await fetch(url)
+      const json= await res.json() 
+      return json
+    } catch(err) {
+       // If there is no data 
+       this.setState({ weatherData: null, errorMessage: err.message }) // Clear the weather data we don't have any to display
+       // Print an error to the console. 
+       console.log('-- Error fetching --')
+       console.log(err.message)
+       // You may want to display an error to the screen here. 
+     }
+  }
+
   handleSubmit(e) {
     this.setState({isLoading : true})
     e.preventDefault()
@@ -28,24 +43,28 @@ class Weather extends Component {
     const url = `https://api.openweathermap.org/data/2.5/weather?zip=${zip},us&appid=${apikey}`
     // const url = `https://api.openweathermap.org/data/2.5/weather?q=${zip},us&appid=${apikey}`
 
-    // Get data from the API with fetch
-    fetch(url).then(res => {
-      // Handle the response stream as JSON
-      return res.json()
-    }).then((json) => {
-      // If the request was successful assign the data to component state
+    this.getWeatherData(url).then((json) => {
       this.setState({ weatherData: json , isLoading: false})
-      // ! This needs better error checking here or at renderWeather() 
-      // It's possible to get a valid JSON response that is not weather 
-      // data, for example when a bad zip code entered.
-    }).catch((err) => {
-      // If there is no data 
-      this.setState({ weatherData: null, errorMessage: err.message }) // Clear the weather data we don't have any to display
-      // Print an error to the console. 
-      console.log('-- Error fetching --')
-      console.log(err.message)
-      // You may want to display an error to the screen here. 
     })
+    
+    // // Get data from the API with fetch
+    // fetch(url).then(res => {
+    //   // Handle the response stream as JSON
+    //   return res.json()
+    // }).then((json) => {
+    //   // If the request was successful assign the data to component state
+    //   this.setState({ weatherData: json , isLoading: false})
+    //   // ! This needs better error checking here or at renderWeather() 
+    //   // It's possible to get a valid JSON response that is not weather 
+    //   // data, for example when a bad zip code entered.
+    // }).catch((err) => {
+    //   // If there is no data 
+    //   this.setState({ weatherData: null, errorMessage: err.message }) // Clear the weather data we don't have any to display
+    //   // Print an error to the console. 
+    //   console.log('-- Error fetching --')
+    //   console.log(err.message)
+    //   // You may want to display an error to the screen here. 
+    // })
 
     if(this.state.errorMessage !== ''){
       return <h3 className="error"> { this.state.errorMessage } </h3>
