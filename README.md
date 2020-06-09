@@ -1,4 +1,4 @@
-# React API Challenge 
+# React weather app
 
 react weather app
 
